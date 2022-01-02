@@ -1,11 +1,13 @@
 import yaml
 import json 
 
+CACHE_DIR = os.path.join(os.path.dirname(__file__), "/cache")
+
 class PluginBase:
     def __init__(self):
         pass
         
-def loadConfig(file):
+def load_config(file):
     try:
         print(f"Loading config file from: {file}")
         return yaml.load(open(file).read(), Loader=yaml.FullLoader)
@@ -13,7 +15,7 @@ def loadConfig(file):
         print("'config.yaml' could not be located. Please ensure 'config.example' has been renamed")
         exit()
 
-def getCache(file):
+def load_cache(plugin_name):
     cache = {}
     try:
         with open(CACHE_FILE, "r") as fin:
@@ -22,7 +24,7 @@ def getCache(file):
         print (e)
     return cache
     
-def saveCache(file, data):
+def save_cache(file, data):
     with open(file, "w") as fout:
         for chunk in json.JSONEncoder().iterencode(data):
             fout.write(chunk)

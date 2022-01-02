@@ -4,23 +4,22 @@ import os
 import re
 import yaml
 from utils import *
-#===Constants===#
 
 class IndieSunday(PluginBase):
     def __init__(self, reddit):
         self.reddit = reddit
-        self.posts = self.getCachedSubmissions()
+        self.cache = self.load_cache()
         self.hub = self.reddit.submission('roprhq')
 
     def streamSubmissions(self):
         subreddit = self.reddit.subreddit(config["subreddit"])
         for log in subreddit.mod.stream.log():
             if log.action == 'removelink':
-                self.removeEntry(log.target_permalink)
+                self.remove_entry(log.target_permalink)
             if log.action == 'approvelink':
-                self.addEntry(log.target_permalink)
+                self.add_entry(log.target_permalink)
 
-    def addEntry(self, permalink):
+    def add_entry(self, permalink):
         url = 'https://www.reddit.com' + permalink
         submission = self.reddit.submission(url=url)
         if submission.link_flair_text == 'Indie Sunday':
@@ -29,29 +28,22 @@ class IndieSunday(PluginBase):
                     'permalink': submission.permalink,
                     'title': submission.title
                 }
-                self.saveCachedSubmissions()
-                self.updateHub()
+                self.save_cached_submissions()
+                self.update_hub()
 
-    def removeEntry(self, permalink):
+    def remove_entry(self, permalink):
         url = 'https://www.reddit.com' + permalink
         submission = self.reddit.submission(url=url)
         if submission.link_flair_text == 'Indie Sunday':
             if submission.id in self.posts:
                 del self.posts[submission.id]
-                self.saveCachedSubmissions()
-                self.updateHub()
+                self.save_cached_submissions()
+                self.update_hub()
     
-    def updateHub(self):
+    def update_hub(self):
         gameList = ''
         for post_id in self.posts:
             hyperlink = '[{}]({})'.format(self.posts[post_id]['title'], self.posts[post_id]['permalink'])
             gameList += '* {}\n'.format(hyperlink)
         body = '{}\n\n{}\n{}'.format(config["templateHeader"], gameList, config["templateFooter"])
         self.hub.edit(body)
-
-
-if __name__ == "__main__":
-    #Intialize 
-    loadConfig()
-    indieSunday = IndieSunday()
-    indieSunday.streamSubmissions()

@@ -5,11 +5,11 @@ class Foo(PluginBase):
         self.reddit = reddit
         print("I am alive")
     
-    def consumeComment(self, comment):
+    def consume_comment(self, comment):
         print(comment.body)
     
-    def consumeSubmission(self, submission):
+    def consume_submission(self, submission):
         print(submission.permalink)
     
-    def consumeModLog(self, modlog):
+    def consume_mod_log(self, mod_log):
         print(modlog.target_permalink)
