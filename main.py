@@ -1,22 +1,28 @@
 import praw
 import os
-import sys
 
-sys.path.append('.')
 import utils
 from plugins import *
 
+CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.yaml")
+CACHE_DIR = os.path.join(os.path.dirname(__file__), '__cache')
+
 class RedditAssitant:
     def __init__(self):
-        CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.yaml")
         self.config = utils.load_config(CONFIG_FILE)
-        self.reddit = self.init_reddit()
+        self.reddit = [] #self.init_reddit()
         self.plugins = self.load_plugins()
+        self.cache = self.init_cache()
 
     def init_reddit(self):
         client = self.config["client"]
         reddit = praw.Reddit(**client)
         return reddit
+    
+    def init_cache(self):
+        if not os.path.isdir(CACHE_DIR):
+             os.mkdir(CACHE_DIR)
+        utils.load_cache('__base')
 
     def load_plugins(self):
         plugins = []
@@ -39,7 +45,7 @@ class RedditAssitant:
                     break
                 self.process_submission(submission)
             for mod_log in mod_stream:
-                if modlog is None:
+                if mod_log is None:
                     break
                 self.process_mod_log(mod_log)
 

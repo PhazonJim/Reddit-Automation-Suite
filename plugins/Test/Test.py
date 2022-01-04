@@ -12,4 +12,4 @@ class Foo(PluginBase):
         print(submission.permalink)
     
     def consume_mod_log(self, mod_log):
-        print(modlog.target_permalink)
+        print(mod_log.target_permalink)

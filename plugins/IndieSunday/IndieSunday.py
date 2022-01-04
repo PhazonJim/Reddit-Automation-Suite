@@ -3,12 +3,16 @@ import json
 import os
 import re
 import yaml
-from utils import *
+import utils
 
-class IndieSunday(PluginBase):
+CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.yaml")
+CACHE_FILE = 
+
+class IndieSunday(utils.PluginBase):
     def __init__(self, reddit):
         self.reddit = reddit
-        self.cache = self.load_cache()
+        self.config = utils.load_config(CONFIG_FILE)
+        self.cache = utils.load_cache()
         self.hub = self.reddit.submission('roprhq')
 
     def streamSubmissions(self):
