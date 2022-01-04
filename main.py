@@ -1,15 +1,15 @@
 import praw
 import os
 
-import utils
+from utils import PluginBase
 from plugins import *
 
-CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.yaml")
-CACHE_DIR = os.path.join(os.path.dirname(__file__), '__cache')
-
-class RedditAssitant:
+class RedditAssitant(PluginBase):
     def __init__(self):
-        self.config = utils.load_config(CONFIG_FILE)
+        self.name = "__base"
+        self.CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.yaml")
+        self.CACHE_DIR = os.path.join(os.path.dirname(__file__), "__cache")
+        self.config = self.load_config()
         self.reddit = [] #self.init_reddit()
         self.plugins = self.load_plugins()
         self.cache = self.init_cache()
@@ -20,9 +20,9 @@ class RedditAssitant:
         return reddit
     
     def init_cache(self):
-        if not os.path.isdir(CACHE_DIR):
-             os.mkdir(CACHE_DIR)
-        utils.load_cache('__base')
+        if not os.path.isdir(self.CACHE_DIR):
+             os.mkdir(self.CACHE_DIR)
+        self.load_cache()
 
     def load_plugins(self):
         plugins = []

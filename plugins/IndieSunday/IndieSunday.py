@@ -6,7 +6,6 @@ import yaml
 import utils
 
 CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.yaml")
-CACHE_FILE = 
 
 class IndieSunday(utils.PluginBase):
     def __init__(self, reddit):
@@ -16,7 +15,7 @@ class IndieSunday(utils.PluginBase):
         self.hub = self.reddit.submission('roprhq')
 
     def streamSubmissions(self):
-        subreddit = self.reddit.subreddit(config["subreddit"])
+        subreddit = self.reddit.subreddit(self.config["subreddit"])
         for log in subreddit.mod.stream.log():
             if log.action == 'removelink':
                 self.remove_entry(log.target_permalink)
