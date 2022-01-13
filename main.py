@@ -10,8 +10,8 @@ class RedditAssitant(PluginBase):
         self.CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.yaml")
         self.CACHE_DIR = os.path.join(os.path.dirname(__file__), "__cache")
         self.config = self.load_config()
-        self.reddit = [] #self.init_reddit()
-        self.subreddit = [] #self.reddit.subreddit(self.config["subreddit"])
+        self.reddit = self.init_reddit()
+        self.subreddit = self.reddit.subreddit(self.config["subreddit"])
         self.plugins = self.load_plugins()
         self.cache = self.init_cache()
 

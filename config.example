@@ -16,3 +16,5 @@ report_config:
   "BarBaz":
     recipient: '@<discordID/RoleID>'
     webhook: 'https://discord.com/api/webhooks/1234/abcde'
+plugins:
+  - "Foo"

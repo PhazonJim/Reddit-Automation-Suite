@@ -1,0 +1,7 @@
+report_config:
+  "FooBar": # String to watch for in report reasons
+    recipient: False
+    webhook: 'https://discord.com/api/webhooks/1234/abcde'
+  "BarBaz":
+    recipient: '@<discordID/RoleID>'
+    webhook: 'https://discord.com/api/webhooks/1234/abcde'
