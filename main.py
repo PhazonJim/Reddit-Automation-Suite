@@ -11,6 +11,7 @@ class RedditAssitant(PluginBase):
         self.CACHE_DIR = os.path.join(os.path.dirname(__file__), "__cache")
         self.config = self.load_config()
         self.reddit = [] #self.init_reddit()
+        self.subreddit = [] #self.reddit.subreddit(self.config["subreddit"])
         self.plugins = self.load_plugins()
         self.cache = self.init_cache()
 
@@ -27,14 +28,13 @@ class RedditAssitant(PluginBase):
     def load_plugins(self):
         plugins = []
         for plugin in self.config["plugins"]:
-            plugins.append(globals()[plugin](self.reddit))
+            plugins.append(globals()[plugin](self.reddit, self.subreddit))
         return plugins
 
     def stream_subreddit(self):
-        subreddit = self.reddit.subreddit(self.config["subreddit"])
-        comment_stream = subreddit.stream.comments(skip_existing=True, pause_after=-1)
-        submission_stream = subreddit.stream.submissions(skip_existing=True, pause_after=-1)
-        mod_stream = subreddit.mod.stream.log(skip_existing=True, pause_after=-1)
+        comment_stream = self.subreddit.stream.comments(skip_existing=True, pause_after=-1)
+        submission_stream = self.subreddit.stream.submissions(skip_existing=True, pause_after=-1)
+        mod_stream = self.subreddit.mod.stream.log(skip_existing=True, pause_after=-1)
         while True:
             for comment in comment_stream:
                 if comment is None:

@@ -43,3 +43,12 @@ class PluginBase:
         with open(PLUGIN_CACHE_FILE_PATH, "w") as fout:
             for chunk in json.JSONEncoder().iterencode(self.cache):
                 fout.write(chunk)
+
+    def consume_comment(self, comment):
+        pass
+    
+    def consume_submission(self, submission):
+        pass
+    
+    def consume_mod_log(self, mod_log):
+        pass

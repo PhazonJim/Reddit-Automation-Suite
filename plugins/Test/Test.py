@@ -1,8 +1,9 @@
 from utils import *
 
 class Foo(PluginBase):
-    def __init__(self, reddit):
+    def __init__(self, reddit, subreddit):
         self.reddit = reddit
+        self.subreddit = subreddit
         print("I am alive")
     
     def consume_comment(self, comment):
