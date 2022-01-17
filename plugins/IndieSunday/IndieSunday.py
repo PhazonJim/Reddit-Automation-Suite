@@ -4,10 +4,11 @@ import utils
 class IndieSunday(utils.PluginBase):
     def __init__(self, reddit, subreddit):
         CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.yaml")
+        self.name = 'IndieSunday'
         self.reddit = reddit
-        self.subreddt = subreddit
-        self.config = utils.load_config(CONFIG_FILE)
-        self.cache = utils.load_cache()
+        self.subreddit = subreddit
+        self.config = self.load_config(CONFIG_FILE)
+        self.cache = self.load_cache()
         self.hub = self.get_current_hub()
 
     def consume_submission(self, submission):
@@ -20,6 +21,7 @@ class IndieSunday(utils.PluginBase):
         url = "https://www.reddit.com" + permalink
         submission = self.reddit.submission(url=url)
         if submission.link_flair_text == "Indie Sunday":
+            print("Add Indie Sunday Post: {}".format(url))
             if submission.id not in self.cache[self.hub.id]:
                 self.cache[self.hub.id][submission.id] = {
                     "permalink": submission.permalink,
@@ -32,6 +34,7 @@ class IndieSunday(utils.PluginBase):
         url = "https://www.reddit.com" + permalink
         submission = self.reddit.submission(url=url)
         if submission.link_flair_text == "Indie Sunday":
+            print("Remove Indie Sunday Post: {}".format(url))
             if submission.id in  self.cache[self.hub.id]:
                 del  self.cache[self.hub.id][submission.id]
                 self.save_cache()
@@ -40,16 +43,18 @@ class IndieSunday(utils.PluginBase):
     def update_hub(self):
         gameList = ""
         posts = self.cache[self.hub.id]
-        for post_id in self.posts:
+        for post_id in posts:
             hyperlink = "[{}]({})".format(posts[post_id]["title"], posts[post_id]["permalink"])
             gameList += "* {}\n".format(hyperlink)
         body = "{}\n\n{}\n{}".format(self.config["templateHeader"], gameList, self.config["templateFooter"])
         self.hub.edit(body)
 
     def get_current_hub(self):
-        hub = self.subreddit.search(query='"Indie Sunday Hub"', sort="new")[0]
+        hub = list(self.subreddit.search(query='"Indie Sunday Hub"', sort="new"))[0]
+        print("Found Indie Sunday Hub: {}".format(hub.id))
         if hub.id not in self.cache:
             self.cache[hub.id] = {}
+        print("Current Cache: {}".format(self.cache))
         return hub
 
     def check_submission_approvals_removals(self, mod_log):
@@ -59,6 +64,6 @@ class IndieSunday(utils.PluginBase):
             self.add_entry(mod_log.target_permalink)
 
     def check_new_hubs(self, submission):
-        if submission.title.includes("Indie Sunday Hub") and submission.author.name == "rGamesMods":
+        if "Indie Sunday Hub" in submission.title and submission.author.name == "rGamesMods":
             self.hub = submission
             self.cache[submission.id] = {}

@@ -11,7 +11,8 @@ class PluginBase:
         self.CONFIG_FILE = ""
         self.cache = {}
         
-    def load_config(self):
+    def load_config(self, CONFIG_FILE):
+        self.CONFIG_FILE = CONFIG_FILE
         try:
             print(f"Loading config file from: {self.CONFIG_FILE}")
             return yaml.load(open(self.CONFIG_FILE).read(), Loader=yaml.FullLoader)

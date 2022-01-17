@@ -6,14 +6,14 @@ from plugins import *
 
 class RedditAssitant(PluginBase):
     def __init__(self):
+        CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.yaml")
         self.name = "__base"
-        self.CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.yaml")
         self.CACHE_DIR = os.path.join(os.path.dirname(__file__), "__cache")
-        self.config = self.load_config()
+        self.config = self.load_config(CONFIG_FILE)
+        self.cache = self.init_cache()
         self.reddit = self.init_reddit()
         self.subreddit = self.reddit.subreddit(self.config["subreddit"])
         self.plugins = self.load_plugins()
-        self.cache = self.init_cache()
 
     def init_reddit(self):
         client = self.config["client"]
