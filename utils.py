@@ -53,3 +53,15 @@ class PluginBase:
     
     def consume_mod_log(self, mod_log):
         pass
+
+def get_full_permalink(partial_permalink):
+    return (f"https://www.reddit.com{partial_permalink}")
+
+def s_to_f(non_f_str: str): 
+    return eval(f'f"""{non_f_str}"""')
+
+def get_user_as_string(reddit_object):
+    if reddit_object.author:
+        return reddit_object.author.name
+    else:
+        return "[Unable to find user]"

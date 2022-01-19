@@ -18,10 +18,9 @@ class IndieSunday(utils.PluginBase):
         self.check_submission_approvals_removals(mod_log)
 
     def add_entry(self, permalink):
-        url = "https://www.reddit.com" + permalink
-        submission = self.reddit.submission(url=url)
+        submission = self.reddit.submission(url=permalink)
         if submission.link_flair_text == "Indie Sunday":
-            print("Add Indie Sunday Post: {}".format(url))
+            print("Add Indie Sunday Post: {}".format(permalink))
             if submission.id not in self.cache[self.hub.id]:
                 self.cache[self.hub.id][submission.id] = {
                     "permalink": submission.permalink,
@@ -31,10 +30,9 @@ class IndieSunday(utils.PluginBase):
                 self.update_hub()
 
     def remove_entry(self, permalink):
-        url = "https://www.reddit.com" + permalink
-        submission = self.reddit.submission(url=url)
+        submission = self.reddit.submission(url=permalink)
         if submission.link_flair_text == "Indie Sunday":
-            print("Remove Indie Sunday Post: {}".format(url))
+            print("Remove Indie Sunday Post: {}".format(permalink))
             if submission.id in  self.cache[self.hub.id]:
                 del  self.cache[self.hub.id][submission.id]
                 self.save_cache()
@@ -58,10 +56,11 @@ class IndieSunday(utils.PluginBase):
         return hub
 
     def check_submission_approvals_removals(self, mod_log):
+        permalink = utils.get_full_permalink(mod_log.target_permalink)
         if mod_log.action == "removelink":
-            self.remove_entry(mod_log.target_permalink)
+            self.remove_entry(permalink)
         if mod_log.action == "approvelink":
-            self.add_entry(mod_log.target_permalink)
+            self.add_entry(permalink)
 
     def check_new_hubs(self, submission):
         if "Indie Sunday Hub" in submission.title and submission.author.name == "rGamesMods":
