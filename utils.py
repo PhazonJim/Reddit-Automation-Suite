@@ -54,6 +54,9 @@ class PluginBase:
     def consume_mod_log(self, mod_log):
         pass
 
+    def consume_modmail(self, modmail):
+        pass
+    
 def get_full_permalink(partial_permalink):
     return (f"https://www.reddit.com{partial_permalink}")
 

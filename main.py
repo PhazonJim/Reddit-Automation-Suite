@@ -35,6 +35,7 @@ class RedditAssitant(PluginBase):
         comment_stream = self.subreddit.stream.comments(skip_existing=True, pause_after=-1)
         submission_stream = self.subreddit.stream.submissions(skip_existing=True, pause_after=-1)
         mod_stream = self.subreddit.mod.stream.log(skip_existing=True, pause_after=-1)
+        #modmail_stream = self.subreddit.mod.stream.modmail_conversations(skip_existing=True, pause_after=-1)
         while True:
             for comment in comment_stream:
                 if comment is None:
@@ -48,6 +49,10 @@ class RedditAssitant(PluginBase):
                 if mod_log is None:
                     break
                 self.process_mod_log(mod_log)
+            #for modmail in modmail_stream:
+            #    if modmail is None:
+            #        break
+            #    self.process_modmail(modmail)
 
     def process_comment(self, comment):
         for plugin in self.plugins:
@@ -60,6 +65,10 @@ class RedditAssitant(PluginBase):
     def process_mod_log(self, mod_log):
         for plugin in self.plugins:
             plugin.consume_mod_log(mod_log)
+            
+    def process_modmail(self, modmail):
+        for plugin in self.plugins:
+            plugin.consume_modmail(modmail)
 
 if __name__ == "__main__":
     #Intialize
