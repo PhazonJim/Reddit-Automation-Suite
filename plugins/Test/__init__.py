@@ -1,1 +1,0 @@
-from .Test import Foo

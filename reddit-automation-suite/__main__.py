@@ -1,16 +1,26 @@
-import praw
 import os
+import logging
+from importlib import import_module
+import praw
+from .utils import PluginBase
+from .plugins import *
 
-from utils import PluginBase
-from plugins import *
+
+logging.basicConfig(
+    format="%(asctime)s %(levelname)s: %(message)s",
+    datefmt="%m/%d/%Y %I:%M:%S %p",
+    level=logging.INFO,
+)
+
 
 class RedditAssitant(PluginBase):
     def __init__(self):
-        CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.yaml")
-        self.name = "__base"
-        self.CACHE_DIR = os.path.join(os.path.dirname(__file__), "__cache")
-        self.config = self.load_config(CONFIG_FILE)
-        self.cache = self.init_cache()
+        PluginBase.__init__(
+            self,
+            name="__base",
+            config_path=os.path.join(os.path.dirname(__file__), "config.yaml"),
+        )
+        self.init_cache()
         self.reddit = self.init_reddit()
         self.subreddit = self.reddit.subreddit(self.config["subreddit"])
         self.plugins = self.load_plugins()
@@ -19,23 +29,35 @@ class RedditAssitant(PluginBase):
         client = self.config["client"]
         reddit = praw.Reddit(**client)
         return reddit
-    
+
     def init_cache(self):
-        if not os.path.isdir(self.CACHE_DIR):
-             os.mkdir(self.CACHE_DIR)
-        self.load_cache()
+        cache_dir = os.path.join(os.path.dirname(__file__), "__cache")
+        if not os.path.isdir(cache_dir):
+            os.mkdir(cache_dir)
 
     def load_plugins(self):
         plugins = []
         for plugin in self.config["plugins"]:
-            plugins.append(globals()[plugin](self.reddit, self.subreddit))
+            logging.info(f"Loading {plugin}")
+            dir_name, file_name, class_name = plugin.split(".")
+            cls = getattr(
+                import_module(f".plugins.{dir_name}.{file_name}", package=__package__),
+                class_name,
+            )
+            plugins.append(cls(self.reddit, self.subreddit))
         return plugins
 
     def stream_subreddit(self):
-        comment_stream = self.subreddit.stream.comments(skip_existing=True, pause_after=-1)
-        submission_stream = self.subreddit.stream.submissions(skip_existing=True, pause_after=-1)
+        comment_stream = self.subreddit.stream.comments(
+            skip_existing=True, pause_after=-1
+        )
+        submission_stream = self.subreddit.stream.submissions(
+            skip_existing=True, pause_after=-1
+        )
         mod_stream = self.subreddit.mod.stream.log(skip_existing=True, pause_after=-1)
-        #modmail_stream = self.subreddit.mod.stream.modmail_conversations(skip_existing=True, pause_after=-1)
+        modmail_stream = self.subreddit.mod.stream.modmail_conversations(
+            skip_existing=True, pause_after=-1
+        )
         while True:
             for comment in comment_stream:
                 if comment is None:
@@ -49,10 +71,10 @@ class RedditAssitant(PluginBase):
                 if mod_log is None:
                     break
                 self.process_mod_log(mod_log)
-            #for modmail in modmail_stream:
-            #    if modmail is None:
-            #        break
-            #    self.process_modmail(modmail)
+            for modmail in modmail_stream:
+                if modmail is None:
+                    break
+                self.process_modmail(modmail)
 
     def process_comment(self, comment):
         for plugin in self.plugins:
@@ -61,16 +83,17 @@ class RedditAssitant(PluginBase):
     def process_submission(self, submission):
         for plugin in self.plugins:
             plugin.consume_submission(submission)
-    
+
     def process_mod_log(self, mod_log):
         for plugin in self.plugins:
             plugin.consume_mod_log(mod_log)
-            
+
     def process_modmail(self, modmail):
         for plugin in self.plugins:
             plugin.consume_modmail(modmail)
 
+
 if __name__ == "__main__":
-    #Intialize
+    # Intialize
     assistant = RedditAssitant()
     assistant.stream_subreddit()

@@ -1,14 +1,16 @@
 import os
 import re
-import utils
+from ...utils import PluginBase
 
-class EndBot(utils.PluginBase):
+
+class EndBot(PluginBase):
     def __init__(self, reddit, subreddit):
-        CONFIG_FILE = os.path.join(os.path.dirname(__file__), "config.yaml")
         self.reddit = reddit
         self.subreddt = subreddit
-        self.config = utils.load_config(CONFIG_FILE)
-        self.cache = utils.load_cache()
+        self.config = self.load_config(
+            os.path.join(os.path.dirname(__file__), "config.yaml")
+        )
+        self._cache = None
         self.posts = []
 
     def consume_comment(self, comment):
@@ -23,8 +25,8 @@ class EndBot(utils.PluginBase):
                     nomination_link = self.cache[parent_id][nomination]
                     self.removeComment(comment, nomination_link)
             except:
-                pass # No bold found, handle with Automoderator rule
-            
+                pass  # No bold found, handle with Automoderator rule
+
     def consume_submission(self, submission):
         if "/r/Games End of Year" in submission.title:
             if submission.id not in self.posts:
@@ -37,9 +39,11 @@ class EndBot(utils.PluginBase):
 
     def removeComment(self, comment, nomination_link):
         comment.mod.remove(mod_note="Duplicate EOY nomination (Automated removal)")
-        message = '''Your nomination was removed because there is an existing 
+        message = """Your nomination was removed because there is an existing 
                     nomination for this located here:\n\n{}\n\nThis message was sent by a bot,
-                    please reply if you believe this removal was a mistake'''.format(nomination_link)
-        comment.mod.send_removal_message(message=message,
-                                        title="Duplicate Nomination",
-                                        type="private")
+                    please reply if you believe this removal was a mistake""".format(
+            nomination_link
+        )
+        comment.mod.send_removal_message(
+            message=message, title="Duplicate Nomination", type="private"
+        )
