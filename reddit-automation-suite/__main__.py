@@ -48,15 +48,27 @@ class RedditAssitant(PluginBase):
         return plugins
 
     def stream_subreddit(self):
-        comment_stream = self.subreddit.stream.comments(
-            skip_existing=True, pause_after=-1
+        comment_stream = (
+            self.subreddit.stream.comments(skip_existing=True, pause_after=-1)
+            if self.config["streams"]["comments"]
+            else []
         )
-        submission_stream = self.subreddit.stream.submissions(
-            skip_existing=True, pause_after=-1
+        submission_stream = (
+            self.subreddit.stream.submissions(skip_existing=True, pause_after=-1)
+            if self.config["streams"]["submissions"]
+            else []
         )
-        mod_stream = self.subreddit.mod.stream.log(skip_existing=True, pause_after=-1)
-        modmail_stream = self.subreddit.mod.stream.modmail_conversations(
-            skip_existing=True, pause_after=-1
+        mod_stream = (
+            self.subreddit.mod.stream.log(skip_existing=True, pause_after=-1)
+            if self.config["streams"]["modlog"]
+            else []
+        )
+        modmail_stream = (
+            self.subreddit.mod.stream.modmail_conversations(
+                skip_existing=True, pause_after=-1
+            )
+            if self.config["streams"]["modmail"]
+            else []
         )
         while True:
             for comment in comment_stream:
