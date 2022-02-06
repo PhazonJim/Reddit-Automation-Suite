@@ -3,3 +3,4 @@
 **/__pycache__
 **/__cache
 *.cache.json
+.venv/
