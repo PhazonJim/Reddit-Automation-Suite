@@ -6,8 +6,6 @@ client:
   #Oauth disabled when using user/pass
   username: '<username>'
   password: "<password>"
-mod_log_depth: 100
-cache_size: 500
 subreddit: foobarbaz
 streams:
   comments: true
