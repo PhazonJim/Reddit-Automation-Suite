@@ -9,6 +9,7 @@ class DataLogger:
     def __init__(self):
         self.db_file = self.get_db_file()
         self.conn = self.create_connection()
+        self.cur = self.conn.cursor()
         self.create_tables()
 
     def get_db_file(self):
@@ -31,8 +32,7 @@ class DataLogger:
 
     def create_table(self, sql):
         try:
-            c = self.conn.cursor()
-            c.execute(sql)
+            self.cur.execute(sql)
         except Error as e:
             print(e)
 
@@ -41,8 +41,7 @@ datalogger = DataLogger()
 def create_entry(sql, params):
     try:
         with datalogger.conn:
-            cur = datalogger.conn.cursor()
-            cur.execute(sql, params)
-            return cur.lastrowid
+            datalogger.cur.execute(sql, params)
+            return datalogger.cur.lastrowid
     except Error as e:
         print(e)

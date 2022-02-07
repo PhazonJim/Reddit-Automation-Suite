@@ -8,8 +8,8 @@ def create_redditor(username):
     :return:
     """
     redditor = (username,)
-    sql = ''' INSERT INTO redditors(username)
-              VALUES(?) '''
+    sql = ''' INSERT OR IGNORE INTO redditors(username)
+              VALUES(?) RETURNING *'''
 
     id = create_entry(sql=sql, params=redditor)
     return id  
