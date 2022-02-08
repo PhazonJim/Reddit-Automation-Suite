@@ -1,15 +1,9 @@
-from ..db import create_entry
+from sqlalchemy import Column, Integer, Text
+from . import Base
 
-def create_redditor(username):
-    """
-    Create a new redditor
-    :param conn:
-    :param redditor:
-    :return:
-    """
-    redditor = (username,)
-    sql = ''' INSERT OR IGNORE INTO redditors(username)
-              VALUES(?) RETURNING *'''
-
-    id = create_entry(sql=sql, params=redditor)
-    return id  
+class Redditor(Base):
+    __tablename__ = "Redditor"
+    id = Column(Integer, primary_key=True)
+    name = Column(Text, unique=True)
+    def __init__(self, name):
+        self.name = name

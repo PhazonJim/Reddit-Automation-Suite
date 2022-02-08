@@ -1,8 +1,7 @@
 import yaml
-import json
 import os
 import logging
-
+from collections import namedtuple
 
 class PluginBase:
     def __init__(
@@ -14,19 +13,12 @@ class PluginBase:
         self.config_path = config_path
         self.main_cache_dir = os.path.join(os.path.dirname(__file__), "__cache")
         self._config = None
-        self._cache = None
 
     @property
     def config(self):
         if not self._config:
             self._config = self.load_config()
         return self._config
-
-    @property
-    def cache(self):
-        if not self._cache:
-            self._cache = self.load_cache()
-        return self._cache
 
     def load_config(self):
         try:
@@ -37,29 +29,6 @@ class PluginBase:
                 "'config.yaml' could not be located. Please ensure 'config.example' has been renamed"
             )
             exit()
-
-    def load_cache(self):
-        plugin_cache_dir = os.path.join(self.main_cache_dir, self.name)
-        plugin_cache_file_path = os.path.join(plugin_cache_dir, "__cache.json")
-        if not os.path.isdir(plugin_cache_dir):
-            os.mkdir(plugin_cache_dir)
-            return {}
-        else:
-            if not os.path.isfile(plugin_cache_file_path):
-                return {}
-            else:
-                try:
-                    with open(plugin_cache_file_path, "r") as fin:
-                        return json.load(fin)
-                except Exception as e:
-                    print(e)
-
-    def save_cache(self):
-        plugin_cache_dir = os.path.join(self.main_cache_dir, self.name)
-        plugin_cache_file_path = os.path.join(plugin_cache_dir, "__cache.json")
-        with open(plugin_cache_file_path, "w") as fout:
-            for chunk in json.JSONEncoder().iterencode(self.cache):
-                fout.write(chunk)
 
     def consume_comment(self, comment):
         pass
@@ -73,9 +42,12 @@ class PluginBase:
     def consume_modmail(self, modmail):
         pass
 
-
-def get_full_permalink(partial_permalink):
-    return f"https://www.reddit.com{partial_permalink}"
+def get_permalink(submission_id):
+    if not submission_id:
+        return None
+    if submission_id.startswith("/r/"):
+        submission_id = submission_id.split("/")[4]
+    return f"https://redd.it/{submission_id}"
 
 
 def s_to_f(non_f_str: str):

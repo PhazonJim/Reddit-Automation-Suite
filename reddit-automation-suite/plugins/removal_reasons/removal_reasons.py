@@ -1,7 +1,7 @@
 import re
 import os
 import yaml
-from ...utils import PluginBase, get_full_permalink, get_user_as_string
+from ...reddit_utils import PluginBase, get_permalink, get_user_as_string
 
 
 class RemovalReasons(PluginBase):
@@ -18,7 +18,7 @@ class RemovalReasons(PluginBase):
         self.check_removals(mod_log)
 
     def check_removals(self, mod_log):
-        permalink = get_full_permalink(mod_log.target_permalink)
+        permalink = get_permalink(mod_log.target_permalink)
         if (
             mod_log.action == "removelink"
             and mod_log._mod not in self.config["ignored_moderators"]

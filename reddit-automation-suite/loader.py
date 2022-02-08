@@ -2,7 +2,7 @@ import os
 import logging
 from importlib import import_module
 import praw
-from .utils import PluginBase
+from .reddit_utils import PluginBase
 
 
 class RedditAssitant(PluginBase):
@@ -14,11 +14,11 @@ class RedditAssitant(PluginBase):
         )
         self.init_cache()
         self.reddit = self.init_reddit()
-        self.subreddit = self.reddit.subreddit(self.config["subreddit"])
+        self.subreddit = self.reddit.subreddit(self.config.get("subreddit"))
         self.plugins = self.load_plugins()
 
     def init_reddit(self):
-        client = self.config["client"]
+        client = self.config.get("client", None)
         reddit = praw.Reddit(**client)
         return reddit
 
@@ -29,7 +29,7 @@ class RedditAssitant(PluginBase):
 
     def load_plugins(self):
         plugins = []
-        for plugin in self.config["plugins"]:
+        for plugin in self.config.get("plugins", []):
             logging.info(f"Loading {plugin}")
             dir_name, file_name, class_name = plugin.split(".")
             cls = getattr(
@@ -40,26 +40,27 @@ class RedditAssitant(PluginBase):
         return plugins
 
     def stream_subreddit(self):
+        streams = self.config.get("streams", None)
         comment_stream = (
             self.subreddit.stream.comments(skip_existing=True, pause_after=-1)
-            if self.config["streams"]["comments"]
+            if streams.get("comments")
             else []
         )
         submission_stream = (
             self.subreddit.stream.submissions(skip_existing=True, pause_after=-1)
-            if self.config["streams"]["submissions"]
+            if streams.get("submissions")
             else []
         )
         mod_stream = (
             self.subreddit.mod.stream.log(skip_existing=True, pause_after=-1)
-            if self.config["streams"]["modlog"]
+            if streams.get("modlog")
             else []
         )
         modmail_stream = (
             self.subreddit.mod.stream.modmail_conversations(
                 skip_existing=True, pause_after=-1
             )
-            if self.config["streams"]["modmail"]
+            if streams.get("modmail")
             else []
         )
         while True:

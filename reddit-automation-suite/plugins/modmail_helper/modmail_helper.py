@@ -1,6 +1,6 @@
 import os
 import logging
-from ...utils import PluginBase
+from ...reddit_utils import PluginBase
 
 
 class ModmailHelper(PluginBase):

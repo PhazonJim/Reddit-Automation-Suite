@@ -1,6 +1,6 @@
 import os
 import re
-from ...utils import PluginBase
+from ...reddit_utils import PluginBase
 
 
 class EndBot(PluginBase):
