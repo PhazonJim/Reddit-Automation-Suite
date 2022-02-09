@@ -1,7 +1,7 @@
 import yaml
 import os
 import logging
-from collections import namedtuple
+
 
 class PluginBase:
     def __init__(
@@ -11,8 +11,8 @@ class PluginBase:
         self.reddit = reddit
         self.subreddit = subreddit
         self.config_path = config_path
-        self.main_cache_dir = os.path.join(os.path.dirname(__file__), "__cache")
         self._config = None
+        logging.info(f"Initialized {self.name}")
 
     @property
     def config(self):
@@ -42,20 +42,36 @@ class PluginBase:
     def consume_modmail(self, modmail):
         pass
 
-def get_permalink(submission_id):
-    if not submission_id:
+
+def get_permalink(r_string):
+    # Given a partial permalink or object id, return a shortened reddit permalink
+    if not r_string:
         return None
-    if submission_id.startswith("/r/"):
-        submission_id = submission_id.split("/")[4]
-    return f"https://redd.it/{submission_id}"
-
-
-def s_to_f(non_f_str: str):
-    return eval(f'f"""{non_f_str}"""')
+    if r_string.startswith("/r/"):
+        r_string = r_string.split("/")[4]
+    return f"https://redd.it/{r_string}"
 
 
 def get_user_as_string(reddit_object):
+    # Take a reddit object and return its author's name if it has one
     if reddit_object.author:
         return reddit_object.author.name
     else:
         return "[Unable to find user]"
+
+
+def has_stickied_comment(submission, moderator_name=None):
+    # Check for any stickied moderator comments
+    # Optionally checks if provided mod name matches
+    try:
+        comment = submission.comments[0]
+        if moderator_name:
+            if comment.distinguished and comment.author.name == moderator_name:
+                return True
+            return False
+        else:
+            if comment.distinguished:
+                return True
+            return False
+    except IndexError:
+        return False

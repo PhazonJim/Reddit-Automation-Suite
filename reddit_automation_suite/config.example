@@ -14,3 +14,4 @@ streams:
   modmail: true
 plugins:
   - "DirectoryName.FileName.ClassName"
+database: "reddit_automation_suite/db/reddit.db"

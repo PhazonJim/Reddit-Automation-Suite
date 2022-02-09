@@ -3,6 +3,7 @@ import logging
 from ...reddit_utils import PluginBase, get_permalink
 from ...db.utils import add_or_update_indie_sunday, get_indie_sunday_posts
 
+
 class IndieSunday(PluginBase):
     def __init__(self, reddit, subreddit):
         config_path = os.path.join(os.path.dirname(__file__), "config.yaml")

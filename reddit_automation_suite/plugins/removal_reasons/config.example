@@ -1,0 +1,9 @@
+removal_reasons_wiki: removal_reasons
+regexes:
+  "1" : "(rule1)|(r1)"
+  "2" : "(rule2)|(r2)"
+  "3" : "(rule3)|(r3)"
+  "4" : "(rule4)|(r4)"
+  "5" : "(rule5)|(r5)"
+ignored_moderators:
+  - AutoModerator

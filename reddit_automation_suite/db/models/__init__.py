@@ -11,10 +11,12 @@ from .redditor import Redditor
 from .submission import Submission
 from .indie_sunday import IndieSunday
 
+
 def get_db_file():
-    with open(os.path.join(os.getcwd(), "reddit-automation-suite/config.yaml")) as f:
-        config = yaml.load(f.read(),  Loader=yaml.FullLoader)
+    with open(os.path.join(os.getcwd(), "reddit_automation_suite/config.yaml")) as f:
+        config = yaml.load(f.read(), Loader=yaml.FullLoader)
         return config["database"]
+
 
 def get_engine():
     engine = create_engine(f"sqlite:///{get_db_file()}")
@@ -22,8 +24,6 @@ def get_engine():
         create_database(engine.url)
     return engine
 
-def remove_and_get_id(session, model, criteria, **kwargs):
-    pass
 
 engine = get_engine()
 Base.metadata.create_all(engine)

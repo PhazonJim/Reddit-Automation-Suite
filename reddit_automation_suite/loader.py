@@ -12,7 +12,6 @@ class RedditAssitant(PluginBase):
             name="__base",
             config_path=os.path.join(os.path.dirname(__file__), "config.yaml"),
         )
-        self.init_cache()
         self.reddit = self.init_reddit()
         self.subreddit = self.reddit.subreddit(self.config.get("subreddit"))
         self.plugins = self.load_plugins()
@@ -21,11 +20,6 @@ class RedditAssitant(PluginBase):
         client = self.config.get("client", None)
         reddit = praw.Reddit(**client)
         return reddit
-
-    def init_cache(self):
-        cache_dir = os.path.join(os.path.dirname(__file__), "__cache")
-        if not os.path.isdir(cache_dir):
-            os.mkdir(cache_dir)
 
     def load_plugins(self):
         plugins = []

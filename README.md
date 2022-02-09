@@ -16,7 +16,7 @@ A set of tools that allows the use of python plugins to easily process comment, 
     - Toggle which reddit streams you need access to under the `streams` field
         - Currently, the options are `comments`, `submissions`, `modlog`, and `modmail`.
     - Configure which plugins you want activated under the `plugins` field
-2. All plugins must be placed into the plugins directory located at `/reddit-automation-suite/plugins/`
+2. All plugins must be placed into the plugins directory located at `/reddit_automation_suite/plugins/`
     - When toggling which plugins to run in config.yaml, the program finds the plugin by knowing which directory to look in, the filename of the main class, and the name of the main class to instantiate. 
     - Example plugin directory structure:
         ```bash
@@ -41,8 +41,11 @@ A set of tools that allows the use of python plugins to easily process comment, 
 
 # Usage
 1. `cd` into project workspace
-2. run `python -m reddit-automation-suite`
+2. run `python -m reddit_automation_suite`
 
 # Testing
 1. `cd` into project workspace
 2. run `python -m pytest tests/ --cov=lower`
+
+# Architecture
+![Image](https://i.imgur.com/Y4hXXxX.png)
