@@ -57,6 +57,11 @@ class RedditAssitant(PluginBase):
             if streams.get("modmail")
             else []
         )
+        report_stream = (
+            self.subreddit.mod.stream.reports(skip_existing=True, pause_after=-1)
+            if streams.get("reports")
+            else []
+        )
         while True:
             for comment in comment_stream:
                 if comment is None:
@@ -74,6 +79,10 @@ class RedditAssitant(PluginBase):
                 if modmail is None:
                     break
                 self.process_modmail(modmail)
+            for mod_log in report_stream:
+                if mod_log is None:
+                    break
+                self.process_report(mod_log)
 
     def process_comment(self, comment):
         for plugin in self.plugins:
@@ -90,3 +99,7 @@ class RedditAssitant(PluginBase):
     def process_modmail(self, modmail):
         for plugin in self.plugins:
             plugin.consume_modmail(modmail)
+
+    def process_report(self, mod_log):
+        for plugin in self.plugins:
+            plugin.consume_report(mod_log)

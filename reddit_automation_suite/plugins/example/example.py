@@ -14,10 +14,22 @@ class Foo(PluginBase):
         )
 
     def consume_comment(self, comment):
-        print(comment.body)
+        logging.info(
+            f"New comment from {comment.author.name} ingested by plugin {self.name}: {comment.body}"
+        )
 
     def consume_submission(self, submission):
-        print(submission.permalink)
+        logging.info(
+            f"New submission from {submission.author.name} ingested by plugin {self.name}: {submission.title}"
+        )
 
     def consume_mod_log(self, mod_log):
-        print(mod_log.target_permalink)
+        logging.info(
+            f"New mod action from {mod_log._mod} ingested by plugin {self.name}: {mod_log.action}"
+        )
+
+    def consume_modmail(self, modmail):
+        logging.info(
+            f"New modmail from {modmail.owner} ingested by plugin {self.name}: {modmail.subject}"
+        )
+        print(vars(modmail))

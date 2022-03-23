@@ -10,7 +10,7 @@ class EndBot(PluginBase):
         self.config = self.load_config(
             os.path.join(os.path.dirname(__file__), "config.yaml")
         )
-        self._cache = None
+        self.cache = {}
         self.posts = []
 
     def consume_comment(self, comment):
@@ -35,15 +35,12 @@ class EndBot(PluginBase):
     def addNomination(self, nomination, comment):
         parent = comment.link_id.split("_")[1]
         self.cache[parent][nomination] = comment.permalink
-        self.saveCachedSubmissions()
 
     def removeComment(self, comment, nomination_link):
         comment.mod.remove(mod_note="Duplicate EOY nomination (Automated removal)")
-        message = """Your nomination was removed because there is an existing 
-                    nomination for this located here:\n\n{}\n\nThis message was sent by a bot,
-                    please reply if you believe this removal was a mistake""".format(
-            nomination_link
-        )
+        message = f"""Your nomination was removed because there is an existing 
+                    nomination for this located here:\n\n{nomination_link}\n\nThis message was sent by a bot,
+                    please reply if you believe this removal was a mistake"""
         comment.mod.send_removal_message(
             message=message, title="Duplicate Nomination", type="private"
         )

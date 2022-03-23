@@ -24,7 +24,8 @@ class PluginBase:
         try:
             logging.debug(f"Loading config file from: {self.config_path}")
             return yaml.load(open(self.config_path).read(), Loader=yaml.FullLoader)
-        except:
+        except Exception as e:
+            print(e)
             logging.error(
                 "'config.yaml' could not be located. Please ensure 'config.example' has been renamed"
             )
@@ -40,6 +41,9 @@ class PluginBase:
         pass
 
     def consume_modmail(self, modmail):
+        pass
+
+    def consume_report(self, mod_log):
         pass
 
 

@@ -58,9 +58,9 @@ class RemovalReasons(PluginBase):
         # Build a removal message to leave on the removed submission
         user = get_user_as_string(submission)
         comment_body = f"Hello /u/{user},\n\n"
-        comment_body += self.removal_reasons.get("header")
+        comment_body += self.removal_reasons.get("header", "")
         comment_body += self.removal_reasons.get("rules").get(removal_rule)
-        comment_body += self.removal_reasons.get("footer")
+        comment_body += self.removal_reasons.get("footer", "")
         return comment_body
 
     def submit_comment(self, submission, comment_body):

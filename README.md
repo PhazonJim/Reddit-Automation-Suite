@@ -21,12 +21,12 @@ A set of tools that allows the use of python plugins to easily process comment, 
     - Example plugin directory structure:
         ```bash
         plugins
-        ├── VoteBot
+        ├── vote_bot
         │   ├── main.py
         |   |   └──class Foo
         │   └── config.yaml
-        └── Events
-            ├── Baz.py
+        └── events
+            ├── baz.py
             |   └──class Bar
             ├── log.txt
             └── config.yaml
@@ -34,10 +34,12 @@ A set of tools that allows the use of python plugins to easily process comment, 
         The main config.yaml `plugins` section would look like this:
         ```yaml
         plugins:
-        - "VoteBot.main.Foo"
-        - "Events.Baz.Bar"
+        - "vote_bot.main.Foo"
+        - "events.baz.Bar"
         ```
-3. All loaded plugin classes are expected to have class methods of `consume_comment`, `consume_submission`, `consume_mod_log`, and `consume_modmail`. A `PluginBase` class can be found in `utils.py` and inherited from which has the aforementioned methods set as well as some other useful methods for loading config files and caching data.
+3. All loaded plugin classes are expected to have class methods of `consume_comment`, `consume_submission`, `consume_mod_log`, and `consume_modmail`. A `PluginBase` class can be found in `utils.py` and inherited from which has the aforementioned methods set as well as some other useful methods for loading config files. 
+
+4. Support for storing data in a local sqlite db is a WIP, you can see current examples being used in `plugins/indie_sunday/indie_sunday.py`
 
 # Usage
 1. `cd` into project workspace

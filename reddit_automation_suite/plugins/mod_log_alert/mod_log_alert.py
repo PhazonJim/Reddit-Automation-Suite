@@ -2,19 +2,20 @@ import os
 import praw
 import textwrap
 from discord_webhook import DiscordWebhook
-import utils
+from ...reddit_utils import PluginBase
 
 
-class ModLogAlert(utils.PluginBase):
+class ModLogAlert(PluginBase):
     def __init__(self, reddit, subreddit):
-        self.reddit = reddit
-        self.subreddt = subreddit
-        self.config = utils.load_config(
-            os.path.join(os.path.dirname(__file__), "config.yaml")
+        PluginBase.__init__(
+            self,
+            name="ModLogAlert",
+            reddit=reddit,
+            subreddit=subreddit,
+            config_path=os.path.join(os.path.dirname(__file__), "config.yaml"),
         )
-        self.posts = []
 
-    def consume_mod_log(self, mod_log):
+    def consume_report(self, mod_log):
         if mod_log.mod_reports:
             for report in mod_log.mod_reports:
                 for phrase in self.config["report_config"]:

@@ -3,7 +3,7 @@ from reddit_automation_suite.reddit_utils import (
     get_permalink,
     get_user_as_string,
     has_stickied_comment,
-    PluginBase
+    PluginBase,
 )
 from .mocks.reddit_objects import Redditor, Submission, Comment
 
@@ -50,32 +50,38 @@ def test_has_stickied_comment():
     assert has_stickied_comment(submission, moderator_name="Frank123") == True
     assert has_stickied_comment(submission, moderator_name="Bob321") == False
 
+
 def test_load_config():
-    config_path=os.path.join(os.path.dirname(__file__), "./mocks/config.yaml")
+    config_path = os.path.join(os.path.dirname(__file__), "./mocks/config.yaml")
     plugin = PluginBase(config_path=config_path)
     assert plugin.config.get("test")
 
+
 def test_config():
-    config_path=os.path.join(os.path.dirname(__file__), "./mocks/config.yaml")
+    config_path = os.path.join(os.path.dirname(__file__), "./mocks/config.yaml")
     plugin = PluginBase(config_path=config_path)
     assert plugin.config == plugin.load_config()
 
+
 def test_consume_comment():
-    config_path=os.path.join(os.path.dirname(__file__), "./mocks/config.yaml")
+    config_path = os.path.join(os.path.dirname(__file__), "./mocks/config.yaml")
     plugin = PluginBase(config_path=config_path)
     plugin.consume_comment(None)
 
+
 def test_consume_submission():
-    config_path=os.path.join(os.path.dirname(__file__), "./mocks/config.yaml")
+    config_path = os.path.join(os.path.dirname(__file__), "./mocks/config.yaml")
     plugin = PluginBase(config_path=config_path)
     plugin.consume_submission(None)
 
+
 def test_consume_mod_log():
-    config_path=os.path.join(os.path.dirname(__file__), "./mocks/config.yaml")
+    config_path = os.path.join(os.path.dirname(__file__), "./mocks/config.yaml")
     plugin = PluginBase(config_path=config_path)
     plugin.consume_mod_log(None)
 
+
 def test_consume_modmail():
-    config_path=os.path.join(os.path.dirname(__file__), "./mocks/config.yaml")
+    config_path = os.path.join(os.path.dirname(__file__), "./mocks/config.yaml")
     plugin = PluginBase(config_path=config_path)
     plugin.consume_modmail(None)
